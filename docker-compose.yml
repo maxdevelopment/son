@@ -1,0 +1,25 @@
+services:
+  nginx:
+    restart: always
+    container_name: local-nginx
+    build:
+      context: .docker/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./public:/public
+      - ./.docker/certs/nginx-selfsigned.crt:/etc/nginx/nginx.crt
+      - ./.docker/certs/nginx-selfsigned.key:/etc/nginx/nginx.key
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - php
+  php:
+    restart: always
+    container_name: local-php
+    build:
+      context: .docker/php
+      dockerfile: Dockerfile
+    volumes:
+      - ./public:/public
